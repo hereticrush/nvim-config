@@ -1,11 +1,12 @@
 local M = {
   "mfussenegger/nvim-dap",
-  enabled = false,
-
+  opt = true,
+  event = "BufReadPre",
+  module = { "dap" },
   dependencies = {
     {
+      'jbyuki/one-small-step-for-vimkind',
       "rcarriga/nvim-dap-ui",
-
       config = function()
         require("dapui").setup()
       end,
@@ -60,7 +61,7 @@ function M.config()
   local extension_path = install_root_dir .. "packages/codelldb/extension/"
   -- local cpptools = "/$HOME/.local/share/nvim/mason/packages/cpptools/extension/debugAdapters"
   local codelldb_path = extension_path .. "adapter/codelldb"
-
+  local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
   dap.adapters.codelldb = {
     type = "server",
     port = "13000",
@@ -86,10 +87,38 @@ function M.config()
       stopOnEntry = true,
     },
   }
+  dap.configurations.lua = {
+    {
+      type = "nlua",
+      request = "attach",
+      name = "Attach to running Neovim instance",
+      host = function()
+        local value = vim.fn.input "Host [127.0.0.1]: "
+        if value ~= "" then
+          return value
+        end
+        return "127.0.0.1"
+      end,
+      port = function()
+        local val = tonumber(vim.fn.input("Port: ", "54321"))
+        assert(val, "Please provide a port number")
+        return val
+      end,
+    },
+  }
 
   dap.configurations.c = dap.configurations.cpp
-  dap.configurations.rust = dap.configurations.cpp
+  local opts = {
+    dap = {
+      adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
+    },
+  }
 
+  require('rust-tools').setup { opts }
+
+  dap.adapters.nlua = function(callback, config)
+    callback { type = "server", host = config.host, port = config.port }
+  end
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
   end
