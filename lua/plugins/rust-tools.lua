@@ -1,6 +1,10 @@
 -- Rust tools
-local M = {
+local install_path = vim.fn.stdpath "data" .. "/mason"
+local extension_path = install_path .. "packages/codelldb/extension/"
+local codelldb_path = extension_path .. "adapter/codelldb"
+local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
 
+local M = {
   "simrat39/rust-tools.nvim",
   opts = {
     tools = {
@@ -76,12 +80,17 @@ local M = {
 
     -- debugging stuff
     dap = {
+      adapter = require('rust-tools.dap').get_codelldb_adapter(
+        codelldb_path, liblldb_path
+      )
+    },
+    --[[{
       adapter = {
         type = "executable",
         command = "lldb-vscode",
         name = "rt_lldb",
       },
-    },
+    },]]
   },
   config = function(_, opts)
     require("rust-tools").setup(opts)

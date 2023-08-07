@@ -5,29 +5,37 @@ local M = {
   module = { "dap" },
   dependencies = {
     {
+      "nvim-telescope/telescope.nvim",
       'jbyuki/one-small-step-for-vimkind',
       "rcarriga/nvim-dap-ui",
       config = function()
         require("dapui").setup()
       end,
+
+      {
+        "theHamsta/nvim-dap-virtual-text",
+        config = function()
+          require('nvim-dap-virtual-text').setup()
+        end
+      },
     },
   },
 }
 
 function M.init()
-  vim.keymap.set("n", "<leader>db", function()
+  vim.keymap.set("n", "<leader>b", function()
     require("dap").toggle_breakpoint()
   end, { desc = "Toggle Breakpoint" })
 
-  vim.keymap.set("n", "<leader>dc", function()
+  vim.keymap.set("n", "<F5>", function()
     require("dap").continue()
   end, { desc = "Continue" })
 
-  vim.keymap.set("n", "<leader>do", function()
+  vim.keymap.set("n", "<F10>", function()
     require("dap").step_over()
   end, { desc = "Step Over" })
 
-  vim.keymap.set("n", "<leader>di", function()
+  vim.keymap.set("n", "<F11>", function()
     require("dap").step_into()
   end, { desc = "Step Into" })
 
@@ -40,8 +48,10 @@ function M.init()
   end, { desc = "Repl" })
 
   vim.keymap.set("n", "<leader>du", function()
-    require("dapui").toggle({})
-    require("dapui").toggle({})
+    require("dapui").toggle({
+      enable_controls = true,
+    })
+    --require("dapui").toggle({})
   end, { desc = "Dap UI" })
 
   vim.keymap.set("n", "<leader>ds", function()
@@ -56,35 +66,39 @@ end
 function M.config()
   local dap = require("dap")
   local dapui = require("dapui")
+  --local dap_virtual_text = require('nvim-dap-virtual-text').setup()
 
   local install_root_dir = vim.fn.stdpath "data" .. "/mason"
   local extension_path = install_root_dir .. "packages/codelldb/extension/"
   -- local cpptools = "/$HOME/.local/share/nvim/mason/packages/cpptools/extension/debugAdapters"
   local codelldb_path = extension_path .. "adapter/codelldb"
-  local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
-  dap.adapters.codelldb = {
-    type = "server",
-    port = "13000",
-    executable = {
-      -- CHANGE THIS to your path!
-      command = codelldb_path,
-      args = { "--port", "13000" },
+  --local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
 
-      -- On windows you may have to uncomment this:
-      -- detached = false,
-    },
+  dap.adapters.lldb = {
+    type = "executable",
+    command = "/usr/bin/lldb-vscode-14",
+    -- On windows you may have to uncomment this:
+    detached = function()
+      if has('win32') then
+        local value = false
+        return value
+      end
+    end,
+    name = "lldb",
   }
 
   dap.configurations.cpp = {
     {
       name = "Launch file",
-      type = "codelldb",
+      type = "lldb",
       request = "launch",
-      cwd = "${workspaceFolder}",
       program = function()
         return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
       end,
-      stopOnEntry = true,
+      cwd = "${workspaceFolder}",
+      stopOnEntry = false,
+      args = {},
+      runInTerminal = true,
     },
   }
   dap.configurations.lua = {
@@ -108,13 +122,7 @@ function M.config()
   }
 
   dap.configurations.c = dap.configurations.cpp
-  local opts = {
-    dap = {
-      adapter = require('rust-tools.dap').get_codelldb_adapter(codelldb_path, liblldb_path),
-    },
-  }
-
-  require('rust-tools').setup { opts }
+  dap.configurations.rust = dap.configurations.cpp
 
   dap.adapters.nlua = function(callback, config)
     callback { type = "server", host = config.host, port = config.port }

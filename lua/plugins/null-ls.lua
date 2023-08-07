@@ -10,8 +10,9 @@ local M = {
     return {
       debug = true,
       sources = {
+        formatting.prettierd,
         formatting.shfmt,
-        formatting.prettier,
+        formatting.prettier.with({ filetypes = { "html", "json", "yaml", "markdown", "javascript", "typescript" } }),
         formatting.clang_format,
         formatting.taplo,
         formatting.black,

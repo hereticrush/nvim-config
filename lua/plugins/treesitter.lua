@@ -2,7 +2,7 @@ local M = { -- Treesitter interface
   {
     "nvim-treesitter/nvim-treesitter",
     version = false, -- last release is way too old and doesn"t work on Windows
-    build = ":TSUpdate",
+    --build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       {
@@ -43,17 +43,17 @@ local M = { -- Treesitter interface
       },
       highlight = {
         enable = true,
-        use_languagetree = true,
+        additional_vim_regex_highlighting = false,
+      },
+      context_commentstring = {
+        enable = true,
+        enable_autocmd = false,
       },
       indent = {
         enable = true,
       },
       autotag = {
         enable = true,
-      },
-      context_commentstring = {
-        enable = true,
-        enable_autocmd = false,
       },
       refactor = {
         highlight_definitions = {
