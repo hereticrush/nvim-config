@@ -79,18 +79,18 @@ local M = {
     }, -- rust-analyzer options
 
     -- debugging stuff
-    dap = {
+    --[[dap = {
       adapter = require('rust-tools.dap').get_codelldb_adapter(
         codelldb_path, liblldb_path
       )
-    },
-    --[[{
+    },]]
+    dap = {
       adapter = {
         type = "executable",
         command = "lldb-vscode",
         name = "rt_lldb",
       },
-    },]]
+    },
   },
   config = function(_, opts)
     require("rust-tools").setup(opts)

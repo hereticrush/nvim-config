@@ -9,7 +9,9 @@ local M = {
       'jbyuki/one-small-step-for-vimkind',
       "rcarriga/nvim-dap-ui",
       config = function()
-        require("dapui").setup()
+        require("dapui").setup({
+          icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
+        })
       end,
 
       {
@@ -39,6 +41,10 @@ function M.init()
     require("dap").step_into()
   end, { desc = "Step Into" })
 
+  vim.keymap.set("n", "<F12>", function()
+    require('dap').step_out()
+  end, { desc = "Step Out" })
+
   vim.keymap.set("n", "<leader>dw", function()
     require("dap.ui.widgets").hover()
   end, { desc = "Widgets" })
@@ -48,10 +54,7 @@ function M.init()
   end, { desc = "Repl" })
 
   vim.keymap.set("n", "<leader>du", function()
-    require("dapui").toggle({
-      enable_controls = true,
-    })
-    --require("dapui").toggle({})
+    require('dap').toggle()
   end, { desc = "Dap UI" })
 
   vim.keymap.set("n", "<leader>ds", function()
@@ -98,7 +101,7 @@ function M.config()
       cwd = "${workspaceFolder}",
       stopOnEntry = false,
       args = {},
-      runInTerminal = true,
+      runInTerminal = false,
     },
   }
   dap.configurations.lua = {

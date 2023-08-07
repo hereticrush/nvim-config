@@ -7,9 +7,9 @@ local M = {
   },
   keys = {
 
-    { "<C-M-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>" },
+    { "<C-o>", "<cmd>lua require('telescope.builtin').find_files()<cr>" },
     {
-      "<C-M-p>",
+      "<C-p>",
       "<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>",
     },
     { "<C-g>", "<cmd>lua require('telescope.builtin').live_grep()<cr>" },
@@ -33,10 +33,10 @@ local M = {
 
       extensions = {
         fzf = {
-          fuzzy = true, -- false will only do exact matching
+          fuzzy = true,                   -- false will only do exact matching
           override_generic_sorter = true, -- override the generic sorter
-          override_file_sorter = true, -- override the file sorter
-          case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+          override_file_sorter = true,    -- override the file sorter
+          case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
           -- the default case_mode is "smart_case"
         },
         ["ui-select"] = {
