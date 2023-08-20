@@ -6,7 +6,7 @@ local M = { -- Statusline
     local lualine = require("lualine")
     --local lualine_require = require("lualine_require")
 
-    local colors = require("tokyonight.colors").setup()
+    local colors = require("nordic.colors")
 
     local conditions = {
       buffer_not_empty = function()
