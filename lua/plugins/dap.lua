@@ -54,7 +54,7 @@ function M.init()
   end, { desc = "Repl" })
 
   vim.keymap.set("n", "<leader>du", function()
-    require('dap').toggle()
+    require('dapui').toggle()
   end, { desc = "Dap UI" })
 
   vim.keymap.set("n", "<leader>ds", function()
@@ -79,7 +79,7 @@ function M.config()
 
   dap.adapters.lldb = {
     type = "executable",
-    command = "/usr/bin/lldb-vscode-14",
+    command = "/usr/bin/lldb-vscode",
     -- On windows you may have to uncomment this:
     detached = function()
       if has('win32') then

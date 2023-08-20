@@ -1,8 +1,8 @@
 local M = { -- Treesitter interface
   {
     "nvim-treesitter/nvim-treesitter",
-    version = false, -- last release is way too old and doesn"t work on Windows
-    --build = ":TSUpdate",
+    version = "*", -- last release is way too old and doesn"t work on Windows
+    build = ":TSUpdate",
     event = { "BufReadPost", "BufNewFile" },
     dependencies = {
       {
