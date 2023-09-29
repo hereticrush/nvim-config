@@ -1,6 +1,5 @@
 local M = {
   "mfussenegger/nvim-dap",
-  opt = true,
   event = "BufReadPre",
   module = { "dap" },
   dependencies = {
