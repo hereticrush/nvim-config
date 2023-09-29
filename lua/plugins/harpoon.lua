@@ -9,7 +9,7 @@ local M = {
 function M.setup()
   local opts = { noremap = true, silent = true }
   local keymap = vim.keymap.set
-  local telescope = require('telescope').load_extension('harpoon')
+  require('telescope').load_extension('harpoon')
   keymap("n", "<leader>ha", ":lua require('harpoon_mark').add_file()<CR>", opts)
   keymap("n", "<leader>hu", ":lua require('harpoon.ui').toggle_quick_menu()<CR>", opts)
   keymap("n", "<leader>hn", ":lua require('harpoon.ui').nav_next()<CR>", opts)
