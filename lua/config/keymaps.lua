@@ -29,7 +29,7 @@ vim.keymap.set("n", "<leader>nf", ":NvimTreeFindFile<CR>", opts) -- search file
 --vim.keymap.set("n", "<leader>tt", ":NeotermToggle<CR>", opts)
 -- vim.keymap.set("n", "<leader>tx", ":NeotermExit<CR>", opts)
 -- Which-key
-vim.keymap.set("n", "<leader>", ":WhichKey<CR>", opts)
+vim.keymap.set("n", "<leader>W", ":WhichKey<CR>", opts)
 
 -- Harpoon
 vim.keymap.set("n", "<leader>ha", ":lua require('harpoon.mark').add_file()<CR>", opts)

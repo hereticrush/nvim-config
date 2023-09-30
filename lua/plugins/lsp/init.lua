@@ -52,6 +52,13 @@ return {
             capabilities = capabilities_zig,
           })
         end,
+        ["gopls"] = function()
+          local capabilities_go = lsp_utils.capabilities
+          lspconfig.gopls.setup({
+            on_attach = lsp_utils.on_attach,
+            capabilities = capabilities_go,
+          })
+        end,
       })
     end,
   },
