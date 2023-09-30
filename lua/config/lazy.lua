@@ -12,7 +12,7 @@ end
 vim.opt.runtimepath:prepend(lazypath)
 
 vim.g.mapleader = " "
-vim.opt.termguicolors = true -- enable 24-bit RGB colors
+--vim.opt.termguicolors = true -- enable 24-bit RGB colors
 
 require("lazy").setup({
   root = vim.fn.stdpath("data") .. "/lazy", -- directory where plugins will be installed
@@ -24,17 +24,39 @@ require("lazy").setup({
   lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json", -- lockfile generated after running update.
   defaults = {
     lazy = false,                                           -- should plugins be lazy-loaded?
-    version = nil,
-    -- version = "*", -- enable this to try installing the latest stable versions of plugins
+    version = "*",                                          -- enable this to try installing the latest stable versions of plugins
   },
   install = {
     -- install missing plugins on startup
     missing = true,
     -- try to load one of these colorschemes when starting an installation during startup
-    colorscheme = { "tokyonight" },
+    colorscheme = { "nordic" },
   },
   ui = {
     border = "rounded",
+    icons = {
+      cmd = " ",
+      config = "",
+      event = "",
+      ft = " ",
+      init = " ",
+      import = " ",
+      keys = " ",
+      lazy = "󰒲 ",
+      loaded = "●",
+      not_loaded = "○",
+      plugin = " ",
+      runtime = " ",
+      source = " ",
+      start = "",
+      task = "✔ ",
+      list = {
+        "●",
+        "➜",
+        "★",
+        "‒",
+      },
+    }
   },
   checker = {
     -- automatically check for plugin updates

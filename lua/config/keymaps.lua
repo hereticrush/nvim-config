@@ -77,4 +77,3 @@ vim.keymap.set("n", "<leader>rd", "<cmd>RustDebuggables<Cr>", opts)
 vim.keymap.set("n", "<leader>rp", "<cmd>RustParentModule<Cr>", opts)
 vim.keymap.set("n", "<leader>rc", "<cmd>RustOpenCargo<Cr>", opts)
 vim.keymap.set("n", "<leader>rv", "<cmd>RustViewCrateGraph<Cr>", opts)
---            t = { "<cmd>lua _CARGO_TEST()<cr>", "Cargo Test" },

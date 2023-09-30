@@ -1,20 +1,11 @@
 local M = {
   "hrsh7th/nvim-cmp",
-  event = "BufReadPre",
+  event = "InsertEnter",
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-cmdline",
     "hrsh7th/cmp-path",
-    --[[ {
-            "zbirenbaum/copilot-cmp",
-            dependencies = "copilot.lua",
-            opts = {},
-            config = function(_, opts)
-                local copilot_cmp = require("copilot_cmp")
-                copilot_cmp.setup(opts)
-            end,
-        },]]
   },
   opts = function()
     local cmp = require("cmp")
