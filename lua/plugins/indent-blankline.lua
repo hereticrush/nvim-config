@@ -3,14 +3,28 @@ local M = {
   event = "BufReadPre",
   main = "ibl",
   opts = {
-    char = "",
-    context_char = "|",
-    show_current_context = true,
-    show_current_context_start = true,
-    use_treesitter = true,
-    context_patterns = { 'class', 'function', 'method' },
-    filetype_exclude = { 'help', 'packer', 'nvimtree', 'dashboard' },
-    buftype_exclude = { 'terminal', 'nofile', 'quickfix' },
+    indent = {
+      highlight = { "CursorColumn", "Whitespace" },
+      char = "|",
+      tab_char = ".",
+    },
+    whitespace = {
+      highlight = { "Function", "Label" },
+      remove_blankline_trail = true,
+    },
+    scope = {
+      enabled = true,
+      include = {
+        node_type = {
+          c = { "return_statement" },
+          lua = { "return_statement", "table_constructor" },
+        },
+      },
+    },
+    debounce = 100,
+    exclude = {
+      buftypes = { 'terminal', 'nofile', 'quickfix', 'prompt' },
+    },
   },
 }
 
