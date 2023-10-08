@@ -15,6 +15,7 @@ local M = {
         formatting.clang_format,
         formatting.taplo,
         formatting.black,
+        formatting.asmfmt,
         diagnostics.trail_space,
         diagnostics.cspell.with({
           diagnostics_postprocess = function(diagnostic)

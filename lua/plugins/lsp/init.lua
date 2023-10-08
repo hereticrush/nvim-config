@@ -5,6 +5,7 @@ return {
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "williamboman/mason-lspconfig.nvim",
+      "folke/neoconf.nvim",
     },
     config = function(_, _)
       local utils = require("utils")
@@ -57,6 +58,21 @@ return {
           lspconfig.gopls.setup({
             on_attach = lsp_utils.on_attach,
             capabilities = capabilities_go,
+          })
+        end,
+        ["lua_ls"] = function()
+          local capabilities_lua = lsp_utils.capabilities
+          lspconfig.lua_ls.setup({
+            on_attach = lsp_utils.on_attach,
+            capabilities = capabilities_lua,
+            settings = {
+              Lua = {
+                  diagnostics = { globals = { 'vim' } },
+                   workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true),
+                },
+              },
+            },
           })
         end,
       })
