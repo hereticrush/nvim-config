@@ -1,5 +1,6 @@
 local M = {
   "folke/noice.nvim",
+  dependencies = { 'rcarriga/nvim-notify' },
   event = "VeryLazy",
   opts = {
     lsp = {

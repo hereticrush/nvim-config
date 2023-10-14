@@ -30,7 +30,7 @@ opt.shiftround = true    -- use multiple of shiftwidth when indenting with "<" a
 opt.hlsearch = true   -- highlight all matches on previous search pattern
 opt.ignorecase = true -- ignore case in search patterns
 opt.smartcase = true  -- smart case
-opt.wildignore = opt.wildignore + { "*/node_modules/*", "*/.git/*", "*/vendor/*" }
+opt.wildignore = opt.wildignore + { "*/node_modules/*", "*/.git/*", "*/vendor/*", "__pycache__", "*.a" }
 opt.wildmenu = true   -- make tab completion for files/buffers act like bash
 
 -- ui

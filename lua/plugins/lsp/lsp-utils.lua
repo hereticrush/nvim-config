@@ -1,11 +1,19 @@
 local M = {}
 
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities.textDocument.completion.completionItem.snippetSupport = true
+local lspconfig = require("lspconfig")
+local defaults = lspconfig.util.default_config
+  defaults.capabilities = vim.tbl_deep_extend(
+  'force',
+  defaults.capabilities,
+  require("cmp_nvim_lsp").default_capabilities()
+)
 
-M.capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+M.default_setup = function(server)
+  lspconfig[server].setup({})
+end
 
 M.setup = function()
+
   vim.diagnostic.config({
     virtual_text = false,
     float = {
@@ -32,23 +40,30 @@ M.setup = function()
 
   -- Mappings.
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local bufopts = { noremap = true, silent = true }
+  vim.api.nvim_create_autocmd('LspAttach', {
+    desc = 'LSP actions',
+    callback = function(event)
+      local opts = {buffer = event.buf, noremap = true, silent = true }
+      vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, opts)
+      vim.keymap.set("n", "<leader>gd", "<cmd>Telescope lsp_definitions<cr>", opts)
+      vim.keymap.set("n", "<leader>gr", "<cmd>Telescope lsp_references<cr>", opts)
+      vim.keymap.set("n", "<leader>gi", "<cmd>Telescope lsp_implementations<cr>", opts)
+      vim.keymap.set("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<cr>", opts)
+      vim.keymap.set('n', 'gl', '<cmd>lua vim.diagnostic.open_float()<cr>', opts)
+      vim.keymap.set('n', 'gs', '<cmd>lua vim.lsp.buf.signature_help()<cr>', opts)
+      vim.keymap.set("n", "<leader>K", vim.lsp.buf.hover, opts)
+      vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, opts)
+      vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+      vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+      vim.keymap.set("n", "<leader>wl", function()
+        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+      end, opts)
+      vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+      vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    end
+  })
 
-  vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, bufopts)
-  vim.keymap.set("n", "<leader>gd", "<cmd>Telescope lsp_definitions<cr>", bufopts)
-  vim.keymap.set("n", "<leader>gr", "<cmd>Telescope lsp_references<cr>", bufopts)
-  vim.keymap.set("n", "<leader>gi", "<cmd>Telescope lsp_implementations<cr>", bufopts)
-  vim.keymap.set("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<cr>", bufopts)
-  vim.keymap.set("n", "<leader>K", vim.lsp.buf.hover, bufopts)
-  vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, bufopts)
-  vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-  vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-  vim.keymap.set("n", "<leader>wl", function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, bufopts)
-  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
-  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-  -- show diagnostics in hover window
+    -- show diagnostics in hover window
   vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()
       local opts = {
@@ -62,7 +77,9 @@ M.setup = function()
       vim.diagnostic.open_float(nil, opts)
     end,
   })
+
 end
+
 
 M.on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>

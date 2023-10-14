@@ -21,8 +21,8 @@ vim.keymap.set("n", "<leader>fb", builtin.buffers, opts)
 vim.keymap.set("n", "<leader>fh", builtin.help_tags, opts)
 
 -- NvimTree
-vim.keymap.set("n", "<leader>n", ":NvimTreeToggle<CR>", opts)    -- open/close
-vim.keymap.set("n", "<leader>nr", ":NvimTreeRefresh<CR>", opts)  -- refresh
+vim.keymap.set("n", "<leader>n", ":NvimTreeToggle<CR>", opts) -- open/close
+vim.keymap.set("n", "<leader>nr", ":NvimTreeRefresh<CR>", opts) -- refresh
 vim.keymap.set("n", "<leader>nf", ":NvimTreeFindFile<CR>", opts) -- search file
 
 -- Terminal
@@ -70,9 +70,12 @@ vim.keymap.set("n", "<leader>cS", "<cmd>Telescope lsp_dynamic_workspace_symbols<
 vim.keymap.set("n", "<leader>rr", "<cmd>RustRunnables<Cr>", opts)
 vim.keymap.set("n", "<leader>re", "<cmd>RustExpandMacro<Cr>", opts)
 vim.keymap.set("n", "<leader>ro", "<cmd>RustOpenExternalDocs<Cr>", opts)
-vim.keymap.set("n", "<leader>rw",
-  "<cmd>lua require('rust-tools/workspace_refresh')._reload_workspace_from_cargo_toml()<Cr>",
-  opts)
+vim.keymap.set(
+	"n",
+	"<leader>rw",
+	"<cmd>lua require('rust-tools/workspace_refresh')._reload_workspace_from_cargo_toml()<Cr>",
+	opts
+)
 vim.keymap.set("n", "<leader>rd", "<cmd>RustDebuggables<Cr>", opts)
 vim.keymap.set("n", "<leader>rp", "<cmd>RustParentModule<Cr>", opts)
 vim.keymap.set("n", "<leader>rc", "<cmd>RustOpenCargo<Cr>", opts)

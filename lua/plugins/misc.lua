@@ -1,20 +1,20 @@
 return {
-  { "nvim-lua/plenary.nvim" },
-  { "MunifTanjim/nui.nvim" },
-  { "nvim-tree/nvim-web-devicons" },
+	{ "nvim-lua/plenary.nvim" },
+	{ "MunifTanjim/nui.nvim" },
+	{ "nvim-tree/nvim-web-devicons" },
 
-  -- Utilities
-  {
-    "folke/persistence.nvim",
-    lazy = false,
-    keys = {
-      {
-        "<leader>ls",
-        function()
-          require("persistence").load()
-        end,
-      },
-    },
-    opts = { options = { "buffers", "curdir", "folds", "help", "tabpages", "terminal", "globals" } },
-  },
+	-- Utilities
+	{
+		"folke/persistence.nvim",
+		lazy = false,
+		keys = {
+			{
+				"<leader>ls",
+				function()
+					require("persistence").load()
+				end,
+			},
+		},
+		opts = { options = { "buffers", "curdir", "folds", "help", "tabpages", "terminal", "globals" } },
+	},
 }
