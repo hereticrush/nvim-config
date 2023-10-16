@@ -3,6 +3,12 @@ local opts = { noremap = true, silent = true, buffer = nil, nowait = true }
 vim.keymap.set("n", "<leader>q", ":qa!<CR>", opts)
 -- Fast saving with <leader> and s
 vim.keymap.set("n", "<leader>s", ":w<CR>", opts)
+
+-- buffers
+vim.keymap.set("n", "<c-n>", ":bn<cr>", opts)
+vim.keymap.set("n", "<c-p>", ":bp<cr>", opts)
+vim.keymap.set("n", "<c-x>", ":bd<cr>", opts)
+
 -- Move around splits
 vim.keymap.set("n", "<leader>wh", "<C-w>h", opts)
 vim.keymap.set("n", "<leader>wj", "<C-w>j", opts)

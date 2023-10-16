@@ -88,7 +88,7 @@ M.lsp_servers = {
 	"gopls",
 	"lua_ls",
 }
-
+--[[
 function M.on_attach(on_attach)
 	vim.api.nvim_create_autocmd("LspAttach", {
 		callback = function(args)
@@ -97,7 +97,7 @@ function M.on_attach(on_attach)
 			on_attach(client, buffer)
 		end,
 	})
-end
+end ]]
 
 function M.warn(msg, notify_opts)
 	vim.notify(msg, vim.log.levels.WARN, notify_opts)
