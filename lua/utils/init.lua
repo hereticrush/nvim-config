@@ -45,33 +45,34 @@ M.lsp_kinds = {
 	Null = " ",
 }
 
-M.mason_packages = {
+M.ensure_installed = {
 	"bash-language-server",
 	"black",
 	"clang-format",
 	"clangd",
 	"codelldb",
 	"css-lsp",
+	"dockerfile-language-server",
 	"eslint-lsp",
-	"graphql-language-service-cli",
 	"html-lsp",
 	"json-lsp",
 	"lua-language-server",
 	"markdownlint",
-	"prettier",
+	"prettierd",
 	"pyright",
+	"rust-analyzer",
 	"shfmt",
+	"stylua",
 	"tailwindcss-language-server",
 	"taplo",
+	"terraform-ls",
+	"tflint",
 	"typescript-language-server",
 	"yaml-language-server",
-	"gopls",
-	"zls",
-	"write-good",
 }
 
 M.lsp_servers = {
-	"zls",
+	"codelldb",
 	"clangd",
 	"tsserver",
 	"pyright",
@@ -85,6 +86,7 @@ M.lsp_servers = {
 	"graphql",
 	"tailwindcss",
 	"gopls",
+	"lua_ls",
 }
 
 function M.on_attach(on_attach)

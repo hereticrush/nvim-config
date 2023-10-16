@@ -4,120 +4,109 @@ return {
 		event = { "BufReadPost", "BufNewFile" },
 		cmd = { "LspInfo", "LspInstall", "LspUninstall" },
 		dependencies = {
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-nvim-lsp",
-			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-cmdline",
-			"hrsh7th/cmp-path",
 			"williamboman/mason-lspconfig.nvim",
 			"folke/neoconf.nvim",
 		},
-		config = function(_, _)
+		config = function()
+			require("neodev").setup({})
 			local lspconfig = require("lspconfig")
-			local utils = require("utils")
-			local mason = require("mason").setup({})
-			local mason_lspconfig = require("mason-lspconfig")
-			local lsp_utils = require("plugins.lsp.lsp-utils")
-			local cmp = require("cmp")
+			local lsp_defaults = require("lspconfig.util").default_config
+			local status_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
 
-			mason_lspconfig.setup({
-				ensure_installed = utils.lsp_servers,
-				handlers = {
-					lsp_utils.default_setup,
-					lua_ls = function()
-						lspconfig.lua_ls.setup({
-							--on_attach = lsp_utils.on_attach,
-							settings = {
-								Lua = {
-									runtime = {
-										version = "LuaJIT",
-									},
-									diagnostics = { globals = { "vim" } },
-									workspace = {
-										library = vim.env.VIMRUNTIME,
-									},
-								},
-							},
-						})
-					end,
-					clangd = function()
-						lspconfig.clangd.setup({
-							keys = {
-								"<leader>cR",
-								"<cmd>ClangdSwitchSourceHeader<cr>",
-								desc = "Switch Source/Header (C/C++)",
-							},
-							root_dir = function(filename)
-								return lspconfig.util.root_pattern(
-									"Makefile",
-									"configure.ac",
-									"configure.in",
-									"config.h.in",
-									"meson.build",
-									"meson_options.txt",
-									"build.ninja"
-								)(filename) or lspconfig.util.root_pattern(
-									"compile_commands.json",
-									"compile_flags.txt"
-								)(filename) or lspconfig.util.find_git_ancestor(filename)
-							end,
-							capabilities = {
-								offsetEncoding = { "utf-16" },
-							},
-							cmd = {
-								"clangd",
-								"--background-index",
-								"--clang-tidy",
-								"--header-insertion=iwyu",
-								"--completion-style=detailed",
-								"--function-arg-placeholders",
-								"--fallback-style=llvm",
-							},
-							init_options = {
-								usePlaceholders = true,
-								completeUnimported = true,
-								clangdFileStatus = true,
-							},
-						})
-					end,
-				},
-			})
-		end,
-	},
-	{
-		"williamboman/mason.nvim",
-		build = ":MasonUpdate",
-		opts = {
-			pip = {
-				upgrade_pip = true,
-			},
-			ui = {
-				border = "rounded",
-				icons = {
-					package_installed = "✓",
-					package_pending = "➜",
-					package_uninstalled = "✗",
-				},
-			},
-		},
-		config = function(_, opts)
-			require("mason").setup(opts)
-			local utils = require("utils")
-			local mr = require("mason-registry")
-			local packages = utils.mason_packages
-			local function ensure_installed()
-				for _, package in ipairs(packages) do
-					local p = mr.get_package(package)
-					if not p:is_installed() then
-						p:install()
-					end
-				end
+			local capabilities
+			if status_ok then
+				capabilities = vim.tbl_deep_extend("force", lsp_defaults.capabilities, cmp_lsp.default_capabilities())
+			else
+				capabilities = vim.lsp.protocol.make_client_capabilities()
 			end
 
-			if mr.refresh then
-				mr.refresh(ensure_installed)
-			else
-				ensure_installed()
+			vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "shadow" })
+			vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "shadow" })
+
+			local utils = require("utils")
+			local default_lsp_config = {
+				on_attach = utils.on_attach,
+				capabilities = capabilities,
+				flags = {
+					debounce_text_changes = 200,
+					allow_incremental_sync = true,
+				},
+			}
+
+			vim.api.nvim_create_autocmd("LspAttach", {
+				desc = "LSP actions",
+				callback = function(event)
+					local opts = { buffer = event.buf, noremap = true, silent = true }
+					vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, opts)
+					vim.keymap.set("n", "<leader>gd", "<cmd>Telescope lsp_definitions<cr>", opts)
+					vim.keymap.set("n", "<leader>gr", "<cmd>Telescope lsp_references<cr>", opts)
+					vim.keymap.set("n", "<leader>gi", "<cmd>Telescope lsp_implementations<cr>", opts)
+					vim.keymap.set("n", "<leader>gt", "<cmd>Telescope lsp_type_definitions<cr>", opts)
+					vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<cr>", opts)
+					vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+					vim.keymap.set("n", "<leader>K", vim.lsp.buf.hover, opts)
+					vim.keymap.set("n", "<leader>k", vim.lsp.buf.signature_help, opts)
+					vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+					vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+					vim.keymap.set("n", "<leader>wl", function()
+						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+					end, opts)
+					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+				end,
+			})
+
+			-- show diagnostics in hover window
+			vim.api.nvim_create_autocmd("CursorHold", {
+				callback = function()
+					local opts = {
+						focusable = false,
+						close_events = { "BufLeave", "CursorMoved", "InsertEnter" },
+						border = "rounded",
+						source = "always",
+						prefix = " ",
+						scope = "cursor",
+					}
+					vim.diagnostic.open_float(nil, opts)
+				end,
+			})
+
+			local servers = {
+				codelldb = {},
+				clangd = {},
+				tsserver = {},
+				pyright = {},
+				eslint = {},
+				bashls = require("plugins.lsp.servers.bashls")(on_attach),
+				yamlls = {},
+				jsonls = {},
+				cssls = {},
+				taplo = {},
+				html = {},
+				graphql = {},
+				tailwindcss = {},
+				lua_ls = require("plugins.lsp.servers.lua_ls")(on_attach),
+			}
+
+			local server_names = {}
+			for server in pairs(servers) do
+				table.insert(server_names, server)
+			end
+
+			local present_mason, mason = pcall(require, "mason-lspconfig")
+			if present_mason then
+				mason.setup({ ensure_installed = server_names })
+			end
+
+			for server, config in pairs(servers) do
+				local final_config = vim.tbl_deep_extend("force", default_lsp_config, config)
+				lspconfig[server].setup(final_config)
+				if server == "rust_analyzer" then
+					local present_rust_tools, rust_tools = pcall(require, "rust-tools")
+					if present_rust_tools then
+						rust_tools.setup({ server = final_config })
+					end
+				end
 			end
 		end,
 	},
