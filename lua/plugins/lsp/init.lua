@@ -30,6 +30,7 @@ return {
             local buffer = args.buf
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             --on_attach(client, buffer)
+            vim.api.nvim_buf_set_option(buffer, "omnifunc", "v:lua.vim.lsp.omnifunc")
             on_attach()
           end,
         })
@@ -43,6 +44,30 @@ return {
           allow_incremental_sync = true,
         },
       }
+
+      vim.diagnostic.config({
+        virtual_text = false,
+        float = {
+          focusable = false,
+          style = "minimal",
+          border = "rounded",
+          source = "always",
+          header = "",
+          prefix = "",
+        },
+        signs = true,
+        underline = true,
+        update_in_insert = true,
+        severity_sort = false,
+      })
+
+      ---- sign column
+      local signs = require("utils").lsp_signs
+
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+      end
 
       vim.api.nvim_create_autocmd("LspAttach", {
         desc = "LSP actions",
@@ -83,7 +108,7 @@ return {
       })
 
       local servers = {
-        codelldb = {},
+        --codelldb = {},
         clangd = require("plugins.lsp.servers.clangd")(on_attach),
         cmake = {},
         tsserver = require("plugins.lsp.servers.tsserver")(on_attach),
