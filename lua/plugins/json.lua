@@ -1,7 +1,6 @@
-return
-{
-  {
-      "actboy168/json.lua",
-      event = "BufEnter",
-  }
+return {
+	{
+		"actboy168/json.lua",
+		event = "BufEnter",
+	},
 }

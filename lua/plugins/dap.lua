@@ -1,287 +1,122 @@
 return {
-  {
-    "mfussenegger/nvim-dap",
-    event = "BufReadPre",
-    module = { "dap" },
-    dependencies = {
-      "rcarriga/nvim-dap-ui",
-      "theHamsta/nvim-dap-virtual-text",
-      "williamboman/mason.nvim",
-      "nvim-telescope/telescope.nvim",
-      "jbyuki/one-small-step-for-vimkind",
-    },
-    config = function()
-      local dap = require("dap")
-      local virtual_text = require("nvim-dap-virtual-text")
-      -- setup dapui
-      require("dapui").setup({
-        icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
-      })
-
-      -- setting up virtual text
-      local display_callback = function(variable, buf, stackframe, node, options)
-        if options.virt_text_pos == "inline" then
-          return " = " .. variable.value
-        else
-          return variable.name .. " = " .. variable.value
-        end
-      end
-
-      virtual_text.setup({
-        display_callback = display_callback,
-      })
-      if not dap.adapters["codelldb"] then
-        require("dap").adapters["codelldb"] = {
-          type = "server",
-          host = "localhost",
-          port = "${port}",
-          executable = {
-            command = "codelldb",
-            args = {
-              "--port",
-              "${port}",
-            },
-          },
-        }
-      end
-
-      if not dap.adapters["python"] then
-        require("dap").adapters["python"] = {
-          type = "executable",
-          command = os.getenv("HOME") .. "/.virtualenvs/tools/bin/python",
-          args = { "-m", "debugpy.adapter" },
-        }
-      end
-
-      -- if rust then delegate to rust-tools
-      for _, lang in ipairs({ "c", "cpp" }) do
-        dap.configurations[lang] = {
-          {
-            type = "codelldb",
-            request = "launch",
-            name = "Launch file",
-            program = function()
-              return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-            end,
-            cwd = "${workspaceFolder}",
-          },
-          {
-            type = "codelldb",
-            request = "attach",
-            name = "Attach to process",
-            processId = require("dap.utils").pick_process,
-            cwd = "${workspaceFolder}",
-          },
-        }
-      end
-
-      vim.keymap.set("n", "<leader>b", "<cmd>DapToggleBreakpoint<cr>", { desc = "Toggle Breakpoint" })
-
-      vim.keymap.set("n", "<F5>", "<cmd>DapContinue<cr>", { desc = "Continue" })
-
-      vim.keymap.set("n", "<F10>", "<cmd>DapStepOver<cr>", { desc = "Step Over" })
-
-      vim.keymap.set("n", "<F11>", "<cmd>DapStepInto<cr>", { desc = "Step Into" })
-
-      vim.keymap.set("n", "<F12>", "<cmd>DapStepOut<cr>", { desc = "Step Out" })
-
-      vim.keymap.set("n", "<leader>dw", function()
-        require("dap.ui.widgets").hover()
-      end, { desc = "Widgets" })
-
-      vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<cr>", { desc = "Repl" })
-
-      vim.keymap.set("n", "<leader>du", function()
-        require("dapui").toggle()
-      end, { desc = "Dap UI" })
-
-      vim.keymap.set("n", "<leader>ds", function()
-        require("osv").launch({ port = 8086 })
-      end, { desc = "Launch Lua Debugger Server" })
-
-      vim.keymap.set("n", "<leader>dd", function()
-        require("osv").run_this()
-      end, { desc = "Launch Lua Debugger" })
-    end,
-  },
-}
-
---[[ local M = {
-	"mfussenegger/nvim-dap",
-	event = "BufReadPre",
-	module = { "dap" },
-	dependencies = {
-		{
+	{
+		"mfussenegger/nvim-dap",
+		event = "BufReadPre",
+		module = { "dap" },
+		dependencies = {
+			"rcarriga/nvim-dap-ui",
+			"theHamsta/nvim-dap-virtual-text",
 			"williamboman/mason.nvim",
 			"nvim-telescope/telescope.nvim",
 			"jbyuki/one-small-step-for-vimkind",
-			"rcarriga/nvim-dap-ui",
-			config = function()
-				require("dapui").setup({
-					icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
-				})
-				local dap = require("dap")
-				if not dap.adapters["codelldb"] then
-					require("dap").adapters["codelldb"] = {
-						type = "server",
-						host = "localhost",
-						port = "${port}",
-						executable = {
-							command = "codelldb",
-							args = {
-								"--port",
-								"${port}",
-							},
-						},
-					}
-				end
-				for _, lang in ipairs({ "c", "cpp" }) do
-					dap.configurations[lang] = {
-						{
-							type = "codelldb",
-							request = "launch",
-							name = "Launch file",
-							program = function()
-								return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-							end,
-							cwd = "${workspaceFolder}",
-						},
-						{
-							type = "codelldb",
-							request = "attach",
-							name = "Attach to process",
-							processId = require("dap.utils").pick_process,
-							cwd = "${workspaceFolder}",
-						},
-					}
-				end
-			end,
-
-			{
-				"theHamsta/nvim-dap-virtual-text",
-				config = function()
-					require("nvim-dap-virtual-text").setup()
-				end,
-			},
 		},
-	},
-}
+		config = function()
+			local dap = require("dap")
+			local virtual_text = require("nvim-dap-virtual-text")
+			-- setup dapui
+			require("dapui").setup({
+				icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
+			})
 
-function M.init()
-	vim.keymap.set("n", "<leader>b", function()
-		require("dap").toggle_breakpoint()
-	end, { desc = "Toggle Breakpoint" })
+			-- setting up virtual text
+			local display_callback = function(variable, buf, stackframe, node, options)
+				if options.virt_text_pos == "inline" then
+					return " = " .. variable.value
+				else
+					return variable.name .. " = " .. variable.value
+				end
+			end
 
-	vim.keymap.set("n", "<F5>", function()
-		require("dap").continue()
-	end, { desc = "Continue" })
+			virtual_text.setup({
+				display_callback = display_callback,
+			})
+			if not dap.adapters["codelldb"] then
+				require("dap").adapters["codelldb"] = {
+					type = "server",
+					host = "localhost",
+					port = "${port}",
+					executable = {
+						command = "codelldb",
+						args = {
+							"--port",
+							"${port}",
+						},
+					},
+				}
+			end
 
-	vim.keymap.set("n", "<F10>", function()
-		require("dap").step_over()
-	end, { desc = "Step Over" })
+			if not dap.adapters["python"] then
+				require("dap").adapters["python"] = {
+					type = "executable",
+					command = os.getenv("HOME") .. "/.virtualenvs/tools/bin/python",
+					args = { "-m", "debugpy.adapter" },
+				}
+			end
 
-	vim.keymap.set("n", "<F11>", function()
-		require("dap").step_into()
-	end, { desc = "Step Into" })
+			if not dap.adapters["rust"] then
+				local rt = require("lua.plugins.rust-tools")
+				require("dap").adapters["rust"] = rt.adapter
+			end
 
-	vim.keymap.set("n", "<F12>", function()
-		require("dap").step_out()
-	end, { desc = "Step Out" })
+			-- if rust then delegate to rust-tools
+			for _, lang in ipairs({ "c", "cpp" }) do
+				dap.configurations[lang] = {
+					{
+						type = "codelldb",
+						request = "launch",
+						name = "Launch file",
+						program = function()
+							return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+						end,
+						cwd = "${workspaceFolder}",
+					},
+					{
+						type = "codelldb",
+						request = "attach",
+						name = "Attach to process",
+						processId = require("dap.utils").pick_process,
+						cwd = "${workspaceFolder}",
+					},
+				}
+			end
 
-	vim.keymap.set("n", "<leader>dw", function()
-		require("dap.ui.widgets").hover()
-	end, { desc = "Widgets" })
+			vim.keymap.set("n", "<leader>b", "<cmd>DapToggleBreakpoint<cr>", { desc = "Toggle Breakpoint" })
 
-	vim.keymap.set("n", "<leader>dr", function()
-		require("dap").repl.open()
-	end, { desc = "Repl" })
+			vim.keymap.set("n", "<F5>", "<cmd>DapContinue<cr>", { desc = "Continue" })
 
-	vim.keymap.set("n", "<leader>du", function()
-		require("dapui").toggle()
-	end, { desc = "Dap UI" })
+			vim.keymap.set("n", "<F10>", "<cmd>DapStepOver<cr>", { desc = "Step Over" })
 
-	vim.keymap.set("n", "<leader>ds", function()
-		require("osv").launch({ port = 8086 })
-	end, { desc = "Launch Lua Debugger Server" })
+			vim.keymap.set("n", "<F11>", "<cmd>DapStepInto<cr>", { desc = "Step Into" })
 
-	vim.keymap.set("n", "<leader>dd", function()
-		require("osv").run_this()
-	end, { desc = "Launch Lua Debugger" })
-end
+			vim.keymap.set("n", "<F12>", "<cmd>DapStepOut<cr>", { desc = "Step Out" })
 
---[[
-function M.config()
-	local dap = require("dap")
-	local dapui = require("dapui")
-	--local dap_virtual_text = require('nvim-dap-virtual-text').setup()
+			vim.keymap.set("n", "<leader>dw", function()
+				require("dap.ui.widgets").hover()
+			end, { desc = "Widgets" })
 
-	local install_root_dir = vim.fn.stdpath("data") .. "/mason"
-	local extension_path = install_root_dir .. "packages/codelldb/extension/"
-	-- local cpptools = "/$HOME/.local/share/nvim/mason/packages/cpptools/extension/debugAdapters"
-	local codelldb_path = extension_path .. "adapter/codelldb"
-	--local liblldb_path = extension_path .. "lldb/lib/liblldb.so"
+			vim.keymap.set("n", "<leader>dr", "<cmd>DapToggleRepl<cr>", { desc = "Repl" })
 
-	dap.adapters.lldb = {
-		type = "executable",
-		command = "/usr/bin/lldb-vscode",
-		-- On windows you may have to uncomment this:
-		detached = function()
-			if has("win32") then
-				local value = false
-				return value
+			vim.keymap.set("n", "<leader>du", function()
+				require("dapui").toggle()
+			end, { desc = "Dap UI" })
+
+			vim.keymap.set("n", "<leader>ds", function()
+				require("osv").launch({ port = 8086 })
+			end, { desc = "Launch Lua Debugger Server" })
+
+			vim.keymap.set("n", "<leader>dd", function()
+				require("osv").run_this()
+			end, { desc = "Launch Lua Debugger" })
+
+			dap.listeners.after.event_initialized["dapui_config"] = function()
+				require("dapui").open()
+			end
+			dap.listeners.before.event_terminated["dapui_config"] = function()
+				require("dapui").close()
+			end
+			dap.listeners.before.event_exited["dapui_config"] = function()
+				require("dapui").close()
 			end
 		end,
-		name = "lldb",
-	}
-
-	dap.configurations.cpp = {
-		{
-			name = "Launch file",
-			type = "lldb",
-			request = "launch",
-			program = function()
-				return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-			end,
-			cwd = "${workspaceFolder}",
-			stopOnEntry = false,
-			args = {},
-			runInTerminal = false,
-		},
-	}
-	dap.configurations.lua = {
-		{
-			type = "nlua",
-			request = "attach",
-			name = "Attach to running Neovim instance",
-			host = function()
-				local value = vim.fn.input("Host [127.0.0.1]: ")
-				if value ~= "" then
-					return value
-				end
-				return "127.0.0.1"
-			end,
-			port = function()
-				local val = tonumber(vim.fn.input("Port: ", "54321"))
-				assert(val, "Please provide a port number")
-				return val
-			end,
-		},
-	}
-
-	dap.configurations.c = dap.configurations.cpp
-	dap.configurations.rust = dap.configurations.cpp
-
-	dap.adapters.nlua = function(callback, config)
-		callback({ type = "server", host = config.host, port = config.port })
-	end
-	dap.listeners.after.event_initialized["dapui_config"] = function()
-		dapui.open()
-	end
-	dap.listeners.before.event_terminated["dapui_config"] = function()
-		dapui.close()
-	end
-	dap.listeners.before.event_exited["dapui_config"] = function()
-		dapui.close()
-	end
-end
-return M]]
+	},
+}
