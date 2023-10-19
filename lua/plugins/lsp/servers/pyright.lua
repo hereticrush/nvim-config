@@ -7,16 +7,16 @@ return function(on_attach)
     end,
     cmd = { "pyright-langserver", "--stdio" },
     filetypes = { "python" },
-    root_dir = function(fname)
-      return util.root_pattern(unpack(root_files))(fname)
-    end,
-    single_file_support = true,
     settings = {
+      pyright = {
+        autoImportCompletion = true,
+      },
       python = {
         analysis = {
           autoSearchPaths = true,
           useLibraryCodeForTypes = true,
           diagnosticMode = "openFilesOnly",
+          typeCheckingMode = "off",
         },
       },
     },

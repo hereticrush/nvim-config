@@ -54,8 +54,7 @@ return {
 			end
 
 			if not dap.adapters["rust"] then
-				local rt = require("lua.plugins.rust-tools")
-				require("dap").adapters["rust"] = rt.adapter
+				dap.configurations.rust = require("plugins.rust-tools").adapter
 			end
 
 			-- if rust then delegate to rust-tools
