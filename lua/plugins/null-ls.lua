@@ -19,6 +19,7 @@ local M = {
         formatting.black,
         formatting.asmfmt,
         formatting.stylua,
+        formatting.ocamlformat,
         diagnostics.trail_space,
         formatting.eslint_d,
         code_actions.gitsigns,
