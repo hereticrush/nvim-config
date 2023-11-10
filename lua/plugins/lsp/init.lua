@@ -46,7 +46,7 @@ return {
 			}
 
 			vim.diagnostic.config({
-				virtual_text = false,
+				virtual_text = true,
 				float = {
 					focusable = false,
 					style = "minimal",
@@ -58,7 +58,7 @@ return {
 				signs = true,
 				underline = true,
 				update_in_insert = true,
-				severity_sort = false,
+				severity_sort = true,
 			})
 
 			---- sign column
