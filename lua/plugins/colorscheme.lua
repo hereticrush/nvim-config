@@ -1,6 +1,6 @@
 local M = {
-  'AlexvZyl/nordic.nvim',
-  --"folke/tokyonight.nvim",
+  --'AlexvZyl/nordic.nvim',
+  "folke/tokyonight.nvim",
   lazy = false,
   priority = 1000,
   opts = function()
@@ -9,11 +9,11 @@ local M = {
       theme = "dark",
       noice = {
         -- Available styles: `classic`, `flat`.
-        style = 'flat',
+        style = "flat",
       },
       telescope = {
         -- Available styles: `classic`, `flat`.
-        style = 'flat',
+        style = "flat",
       },
       leap = {
         -- Dims the backdrop when using leap.
@@ -38,13 +38,12 @@ local M = {
     }
   end,
   config = function(_, opts)
-    --[[local tokyonight = require("tokyonight")
+    local tokyonight = require("tokyonight")
     tokyonight.setup(opts)
     tokyonight.load()
-    ]]
-    local nordic = require("nordic")
+    --[[local nordic = require("nordic")
     nordic.setup(opts)
-    nordic.load()
+    nordic.load()]]
   end,
 }
 

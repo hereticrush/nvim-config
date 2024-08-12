@@ -5,7 +5,7 @@ local M = {
     init = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
-      require('which-key').setup()
+      require("which-key").setup()
     end,
     mappings = {
       ["r"] = {
@@ -24,26 +24,17 @@ local M = {
             "Reload Workspace",
           },
           o = { "<cmd>RustOpenExternalDocs<Cr>", "Open External Docs" },
-        }
+        },
       },
-      --[[      ["f"] = {
-        ["<leader>"] = {
-          name = "+file",
-          f = { "<cmd>Telescope find_files<cr>", "Find File" },                                     -- create a binding with label
-          r = { "<cmd>Telescope oldfiles<cr>", "Open Recent File", noremap = false, buffer = 123 }, -- additional options for creating the keymap
-          F = { "<cmd>Telescope live_grep theme=ivy<cr>", "Find Text" },
-          n = { "New File" },                                                                       -- just a label. don't create any mapping
-          e = "Edit File",                                                                          -- same as above
-          ["1"] = "which_key_ignore",                                                               -- special label to hide it in the popup
-          b = { function() print("bar") end, "Foobar" }                                             -- you can also pass functions!
-        }
-      }, ]]
       ["d"] = {
         ["<leader>"] = {
           name = "Dap",
           R = { "<cmd>lua require'dap'.run_to_cursor()<cr>", "Run to Cursor" },
           E = { "<cmd>lua require'dapui'.eval(vim.fn.input '[Expression] > ')<cr>", "Evaluate Input" },
-          C = { "<cmd>lua require'dap'.set_breakpoint(vim.fn.input '[Condition] > ')<cr>", "Conditional Breakpoint" },
+          C = {
+            "<cmd>lua require'dap'.set_breakpoint(vim.fn.input '[Condition] > ')<cr>",
+            "Conditional Breakpoint",
+          },
           U = { "<cmd>lua require'dapui'.toggle()<cr>", "Toggle UI" },
           b = { "<cmd>lua require'dap'.step_back()<cr>", "Step Back" },
           c = { "<cmd>lua require'dap'.continue()<cr>", "Continue" },
@@ -61,7 +52,7 @@ local M = {
           t = { "<cmd>lua require'dap'.toggle_breakpoint()<cr>", "Toggle Breakpoint" },
           x = { "<cmd>lua require'dap'.terminate()<cr>", "Terminate" },
           u = { "<cmd>lua require'dap'.step_out()<cr>", "Step Out" },
-        }
+        },
       },
       h = {
         ["<leader>"] = {
@@ -71,7 +62,7 @@ local M = {
           n = { "<cmd>lua require('harpoon.ui').nav_next()<CR>", "Nav Next" },
           p = { "<cmd>lua require('harpoon.ui').nav_prev()<CR>", "Nav Prev" },
           f = { "<cmd>lua require('harpoon.ui').nav_file()<CR>", "Nav File" },
-        }
+        },
       },
       t = {
         ["<leader>"] = {
@@ -79,11 +70,11 @@ local M = {
           o = { "<cmd>lua require('telescope.builtin').find_files()<cr>", "Find Files" },
           p = {
             "<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>",
-            "Get Dropdown"
+            "Get Dropdown",
           },
           g = { "<cmd>lua require('telescope.builtin').live_grep()<cr>", "Live Grep" },
           f = { "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>", "Fuzzy Find" },
-        }
+        },
       },
       g = {
         ["<leader>"] = {
@@ -106,7 +97,7 @@ local M = {
           d = {
             "<cmd>Gitsigns diffthis HEAD<cr>",
             "Diff",
-          }
+          },
         },
         l = {
           ["<leader>"] = {
@@ -139,19 +130,19 @@ local M = {
               "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
               "Workspace Symbols",
             },
-          }
+          },
         },
         n = {
           ["<leader>"] = {
             name = "NvimTree",
-            n = { "<cmd>NvimTreeToggle<CR>", "NvimTree Toggle" },    -- open/close
-            r = { "<cmd>NvimTreeRefresh<CR>", "NvimTree Refresh" },  -- refresh
-            f = { "<cmd>NvimTreeFindFile<CR>", "NvimTree FindFile" } -- search file
+            n = { "<cmd>NvimTreeToggle<CR>", "NvimTree Toggle" }, -- open/close
+            r = { "<cmd>NvimTreeRefresh<CR>", "NvimTree Refresh" }, -- refresh
+            f = { "<cmd>NvimTreeFindFile<CR>", "NvimTree FindFile" }, -- search file
           },
         },
       },
     },
-  }
+  },
 }
 
 return M
